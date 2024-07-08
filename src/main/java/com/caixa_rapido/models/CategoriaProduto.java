@@ -2,6 +2,7 @@ package com.caixa_rapido.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -9,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "categoria_produto")
 public class CategoriaProduto {
 
@@ -18,4 +20,8 @@ public class CategoriaProduto {
 
     private String nome;
     private Integer desconto;
+
+    public CategoriaProduto(String nome) {
+        this.nome = nome;
+    }
 }
