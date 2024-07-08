@@ -15,9 +15,8 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID idCliente;
-
     private String nome;
     private String cpf;
     private String email;
-    private Integer pontos;
+    private int pontos;
 }
