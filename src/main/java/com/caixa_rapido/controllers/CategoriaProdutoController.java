@@ -29,7 +29,7 @@ public class CategoriaProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoriaProduto>> getAll() {
+    public ResponseEntity<List<CategoriaProduto>> getCategorias() {
         var categorias = service.getAllResponse();
 
         return categorias.isEmpty()
@@ -38,7 +38,7 @@ public class CategoriaProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> getPorId(@PathVariable UUID id) {
+    public ResponseEntity<CategoriaProduto> getCategoriaPorId(@PathVariable UUID id) {
         return ok(service.getPorId(id));
     }
 

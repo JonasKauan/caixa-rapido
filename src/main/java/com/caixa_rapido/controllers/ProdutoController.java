@@ -27,7 +27,7 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponse>> getAll() {
+    public ResponseEntity<List<ProdutoResponse>> getProdutos() {
         var produtos = service.getAllResponse();
 
         return produtos.isEmpty()
@@ -36,7 +36,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponse> getPorId(@PathVariable UUID id) {
+    public ResponseEntity<ProdutoResponse> getProdutoPorId(@PathVariable UUID id) {
         return ok(new ProdutoResponse(service.getPorId(id)));
     }
 

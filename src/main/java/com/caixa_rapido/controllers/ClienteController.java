@@ -29,7 +29,7 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClienteResponse>> getAll() {
+    public ResponseEntity<List<ClienteResponse>> getClientes() {
         var clientes = service.getAllResponse();
 
         return clientes.isEmpty()
@@ -38,7 +38,7 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponse> getPorId(@PathVariable UUID id) {
+    public ResponseEntity<ClienteResponse> getClientePorId(@PathVariable UUID id) {
         return ok(new ClienteResponse(service.getPorId(id)));
     }
 
