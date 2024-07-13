@@ -43,4 +43,8 @@ public class Compra {
             total += produtoCompra.getTotal();
         }
     }
+
+    public int getTotalEmPontos() {
+        return (int) total * 10;
+    }
 }

@@ -17,7 +17,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
                 p.idProduto,
                 p.nome,
                 p.valor,
-                new CategoriaProduto(p.categoria.nome)
+                p.categoria
             )
             FROM Produto p
             """)

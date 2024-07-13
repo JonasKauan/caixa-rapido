@@ -20,7 +20,7 @@ public interface ProdutoCompraRepository extends JpaRepository<ProdutoCompra, UU
                     p.produto.idProduto,
                     p.produto.nome,
                     p.produto.valor,
-                    new CategoriaProduto(p.produto.categoria.nome)
+                    p.produto.categoria
                 ),
                 p.quantidade,
                 p.total

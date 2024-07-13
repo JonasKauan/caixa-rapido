@@ -25,7 +25,7 @@ public class CompraController {
     public ResponseEntity<CompraResponse> cadastrar(
             @RequestParam(required = false) UUID fkCliente
     ) {
-        return status(HttpStatus.CREATED).body(new CompraResponse(service.cadastrar(fkCliente)));
+        return status(HttpStatus.CREATED).body(service.cadastrar(fkCliente));
     }
 
     @GetMapping
@@ -39,7 +39,7 @@ public class CompraController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CompraResponse> getCompraPorId(@PathVariable UUID id) {
-        return ok(new CompraResponse(service.getPorId(id)));
+        return ok(service.getResponsePorId(id));
     }
 
     @PutMapping("/{id}")
@@ -47,7 +47,7 @@ public class CompraController {
             @PathVariable UUID id,
             @RequestBody @Valid CompraPutRequest dto
     ) {
-        return ok(new CompraResponse(service.alterar(id, dto)));
+        return ok(service.alterar(id, dto));
     }
 
     @PutMapping("/finalizar-compra/{id}")

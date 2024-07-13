@@ -3,7 +3,6 @@ package com.caixa_rapido.services;
 import com.caixa_rapido.dtos.compra.CompraPutRequest;
 import com.caixa_rapido.dtos.compra.CompraResponse;
 import com.caixa_rapido.models.Compra;
-import com.caixa_rapido.models.ProdutoCompra;
 import com.caixa_rapido.repositories.CompraRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -17,48 +16,50 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class CompraService {
-    private final CompraRepository compraRepository;
+    private final CompraRepository repository;
     private final ClienteService clienteService;
 
-    public Compra cadastrar(UUID fkCliente) {
+    public CompraResponse cadastrar(UUID fkCliente) {
         var compra = new Compra();
         if(fkCliente != null) compra.setCliente(clienteService.getPorId(fkCliente));
-        return compraRepository.save(compra);
+        return new CompraResponse(repository.save(compra));
     }
 
     public List<CompraResponse> getAllResponse() {
-        return compraRepository.findAllResponse();
+        return repository.findAllResponse();
     }
 
     public Compra getPorId(UUID id) {
-        if(!compraRepository.existsById(id))
+        if(!repository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Compra com o id listado não listado");
 
-        return compraRepository.findById(id).get();
+        return repository.findById(id).get();
     }
 
-    public Compra alterar(UUID id, CompraPutRequest dto) {
+    public CompraResponse getResponsePorId(UUID id) {
+        return new CompraResponse(getPorId(id));
+    }
+
+    public CompraResponse alterar(UUID id, CompraPutRequest dto) {
         var compra = getPorId(id);
 
-        compra.setCliente(clienteService.getPorId(dto.fkCliente()));
+        if(dto.fkCliente() != null) compra.setCliente(clienteService.getPorId(dto.fkCliente()));
         BeanUtils.copyProperties(dto, compra);
 
-        return compraRepository.save(compra);
+        return new CompraResponse(repository.save(compra));
     }
 
     public void deletaPorId(UUID id) {
-        if(!compraRepository.existsById(id))
+        if(!repository.existsById(id))
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Compra com o id listado não listado");
 
-        compraRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
 
     public Compra finalizarCompra(UUID id) {
         var compra = getPorId(id);
-
         compra.calcularTotal();
-
-        return compraRepository.save(compra);
+        return repository.save(compra);
     }
 }

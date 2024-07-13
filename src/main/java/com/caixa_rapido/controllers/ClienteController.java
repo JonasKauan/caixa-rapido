@@ -25,7 +25,7 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteResponse> cadastrar(@Valid @RequestBody ClientePostRequest dto) {
-        return status(HttpStatus.CREATED).body(new ClienteResponse(service.cadastrar(dto)));
+        return status(HttpStatus.CREATED).body(service.cadastrar(dto));
     }
 
     @GetMapping
@@ -39,7 +39,7 @@ public class ClienteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getClientePorId(@PathVariable UUID id) {
-        return ok(new ClienteResponse(service.getPorId(id)));
+        return ok(service.getResponsePorId(id));
     }
 
     @PutMapping("/{id}")
@@ -47,7 +47,7 @@ public class ClienteController {
         @PathVariable UUID id,
         @Valid @RequestBody ClientePutRequest dto
     ) {
-        return ok(new ClienteResponse(service.alterar(id, dto)));
+        return ok(service.alterar(id, dto));
     }
 
     @DeleteMapping("/{id}")

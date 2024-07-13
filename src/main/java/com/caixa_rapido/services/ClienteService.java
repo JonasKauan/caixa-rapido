@@ -20,7 +20,7 @@ public class ClienteService {
     private final ClienteRepository repository;
 
 
-    public Cliente cadastrar(ClientePostRequest dto) {
+    public ClienteResponse cadastrar(ClientePostRequest dto) {
         if(repository.existsByCpf(dto.cpf()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
 
@@ -30,7 +30,7 @@ public class ClienteService {
         var cliente = new Cliente();
         BeanUtils.copyProperties(dto, cliente);
 
-        return repository.save(cliente);
+        return new ClienteResponse(repository.save(cliente));
     }
 
     public List<ClienteResponse> getAllResponse() {
@@ -44,7 +44,11 @@ public class ClienteService {
         return repository.findById(id).get();
     }
 
-    public Cliente alterar(UUID id, ClientePutRequest dto) {
+    public ClienteResponse getResponsePorId(UUID id) {
+        return new ClienteResponse(getPorId(id));
+    }
+
+    public ClienteResponse alterar(UUID id, ClientePutRequest dto) {
         if(dto.cpf() != null && repository.existsByCpf(dto.cpf()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
 
@@ -54,7 +58,7 @@ public class ClienteService {
         var cliente = getPorId(id);
         BeanUtils.copyProperties(dto, cliente);
 
-        return repository.save(cliente);
+        return new ClienteResponse(repository.save(cliente));
     }
 
     public void deletarPorId(UUID id) {

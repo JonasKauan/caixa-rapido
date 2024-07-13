@@ -1,8 +1,8 @@
 package com.caixa_rapido.controllers;
 
-import com.caixa_rapido.dtos.produto.ProdutoRequest;
-import com.caixa_rapido.dtos.produto.ProdutoResponse;
-import com.caixa_rapido.services.ProdutoService;
+import com.caixa_rapido.dtos.parcela.ParcelaRequest;
+import com.caixa_rapido.dtos.parcela.ParcelaResponse;
+import com.caixa_rapido.services.ParcelaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,37 +15,37 @@ import java.util.UUID;
 import static org.springframework.http.ResponseEntity.*;
 
 @RestController
-@RequestMapping("/produtos")
+@RequestMapping("/parcelas")
 @RequiredArgsConstructor
-public class ProdutoController {
+public class ParcelaController {
 
-    private final ProdutoService service;
+    private final ParcelaService service;
 
     @PostMapping
-    public ResponseEntity<ProdutoResponse> cadastrar(@Valid @RequestBody ProdutoRequest dto) {
+    public ResponseEntity<ParcelaResponse> cadastrar(@RequestBody @Valid ParcelaRequest dto) {
         return status(HttpStatus.CREATED).body(service.cadastrar(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponse>> getProdutos() {
-        var produtos = service.getAllResponse();
+    public ResponseEntity<List<ParcelaResponse>> getParcelas() {
+        var parcelas = service.getParcelasResponse();
 
-        return produtos.isEmpty()
+        return parcelas.isEmpty()
                 ? noContent().build()
-                : ok(produtos);
+                : ok(parcelas);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResponse> getProdutoPorId(@PathVariable UUID id) {
+    public ResponseEntity<ParcelaResponse> getParcelaPorId(@PathVariable UUID id) {
         return ok(service.getResponsePorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProdutoResponse> alterar(
-            @PathVariable UUID id,
-            @Valid @RequestBody ProdutoRequest dto
+    public ResponseEntity<ParcelaResponse> alterar(
+        @PathVariable UUID id,
+        @RequestBody @Valid ParcelaRequest dto
     ) {
-        return ok(service.alterar(dto, id));
+        return ok(service.alterar(id, dto));
     }
 
     @DeleteMapping("/{id}")

@@ -44,7 +44,6 @@ public class ProdutoCompra {
     }
 
     public void setTotal() {
-        double desconto = this.produto.getCategoria().getDesconto();
-        this.total = (this.produto.getValor() * (1 - desconto / 100)) * quantidade;
+        this.total = this.produto.getValorComDesconto() * quantidade;
     }
 }

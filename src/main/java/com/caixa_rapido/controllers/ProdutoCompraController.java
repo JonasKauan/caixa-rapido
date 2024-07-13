@@ -25,7 +25,7 @@ public class ProdutoCompraController {
     public ResponseEntity<ProdutoCompraResponse> cadastrar(
             @RequestBody @Valid ProdutoCompraPostRequest dto
     ) {
-        return status(HttpStatus.CREATED).body(new ProdutoCompraResponse(service.cadastrar(dto)));
+        return status(HttpStatus.CREATED).body(service.cadastrar(dto));
     }
 
     @GetMapping
@@ -39,7 +39,7 @@ public class ProdutoCompraController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoCompraResponse> getProdutoCompraPorId(@PathVariable UUID id) {
-        return ok(new ProdutoCompraResponse(service.getPorId(id)));
+        return ok(service.getResponsePorId(id));
     }
 
     @PutMapping("/{id}")
@@ -47,7 +47,7 @@ public class ProdutoCompraController {
             @PathVariable UUID id,
             @RequestBody @Valid ProdutoCompraPutRequest dto
     ) {
-        return ok(new ProdutoCompraResponse(service.alterar(id, dto)));
+        return ok(service.alterar(id, dto));
     }
 
     @DeleteMapping("/{id}")

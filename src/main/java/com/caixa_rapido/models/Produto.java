@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -27,5 +28,19 @@ public class Produto {
     @JoinColumn(name = "fkcategoria")
     private CategoriaProduto categoria;
 
+    public Double getValorComDesconto() {
+        return valor * (1 - categoria.getDesconto() / 100.);
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Produto produto)) return false;
+        return Objects.equals(idProduto, produto.idProduto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idProduto);
+    }
 }

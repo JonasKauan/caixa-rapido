@@ -1,7 +1,7 @@
 package com.caixa_rapido.controllers;
 
 import com.caixa_rapido.dtos.categoriaProduto.CategoriaProdutoRequest;
-import com.caixa_rapido.models.CategoriaProduto;
+import com.caixa_rapido.dtos.categoriaProduto.CategoriaProdutoResponse;
 import com.caixa_rapido.services.CategoriaProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +22,14 @@ public class CategoriaProdutoController {
     private final CategoriaProdutoService service;
 
     @PostMapping
-    public ResponseEntity<CategoriaProduto> cadastrar(
+    public ResponseEntity<CategoriaProdutoResponse> cadastrar(
             @Valid @RequestBody CategoriaProdutoRequest dto
     ) {
         return status(HttpStatus.CREATED).body(service.cadastrar(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoriaProduto>> getCategorias() {
+    public ResponseEntity<List<CategoriaProdutoResponse>> getCategorias() {
         var categorias = service.getAllResponse();
 
         return categorias.isEmpty()
@@ -38,12 +38,12 @@ public class CategoriaProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> getCategoriaPorId(@PathVariable UUID id) {
-        return ok(service.getPorId(id));
+    public ResponseEntity<CategoriaProdutoResponse> getCategoriaPorId(@PathVariable UUID id) {
+        return ok(service.getResponsePorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoriaProduto> alterar(
+    public ResponseEntity<CategoriaProdutoResponse> alterar(
             @PathVariable UUID id,
             @Valid @RequestBody CategoriaProdutoRequest dto
     ) {
