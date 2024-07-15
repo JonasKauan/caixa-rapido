@@ -27,4 +27,10 @@ public class Cliente {
         this.nome = nome;
         this.pontos = pontos;
     }
+
+    public void atualizarPontos(Compra compra) {
+        int pontosGastos = compra.calcularPontosGastos();
+        if(pontosGastos > 0) this.pontos -= pontosGastos;
+        this.pontos += compra.getTotal();
+    }
 }

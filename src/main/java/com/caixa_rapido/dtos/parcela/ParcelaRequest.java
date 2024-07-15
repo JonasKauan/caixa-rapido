@@ -7,7 +7,6 @@ import java.util.UUID;
 
 
 public record ParcelaRequest(
-        @NotNull
         UUID fkFormaPagamento,
         @NotNull
         UUID fkCompra,

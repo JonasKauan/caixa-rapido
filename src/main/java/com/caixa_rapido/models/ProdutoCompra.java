@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Getter
@@ -45,5 +46,17 @@ public class ProdutoCompra {
 
     public void setTotal() {
         this.total = this.produto.getValorComDesconto() * quantidade;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProdutoCompra that)) return false;
+        return Objects.equals(idProdutoCompra, that.idProdutoCompra);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idProdutoCompra);
     }
 }

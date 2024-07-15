@@ -43,6 +43,9 @@ public class CompraService {
     public CompraResponse alterar(UUID id, CompraPutRequest dto) {
         var compra = getPorId(id);
 
+        if(compra.isFinalizada())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Essa compra já foi finalizada");
+
         if(dto.fkCliente() != null) compra.setCliente(clienteService.getPorId(dto.fkCliente()));
         BeanUtils.copyProperties(dto, compra);
 
@@ -56,10 +59,53 @@ public class CompraService {
         repository.deleteById(id);
     }
 
-
-    public Compra finalizarCompra(UUID id) {
+    public CompraResponse finalizarCompra(UUID id) {
         var compra = getPorId(id);
-        compra.calcularTotal();
-        return repository.save(compra);
+
+        if(compra.isFinalizada())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Essa compra já foi finalizada");
+
+        if(compra.getProdutosCompra().isEmpty())
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A compra não possui itens"
+            );
+
+        quitarCompra(compra);
+        return new CompraResponse(repository.save(compra));
+    }
+
+    private void quitarCompra(Compra compra) {
+        compra.setTotal();
+        double valorAtualizado = descontarPontosCompra(compra);
+        double totalParcelas = compra.calcularParcelas();
+
+        if(valorAtualizado < totalParcelas)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "O preço pago excede o valor da compra"
+            );
+
+        else if(valorAtualizado > totalParcelas)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "A compra não foi quitada"
+            );
+
+        compra.setFinalizada(true);
+        if(compra.getCliente() != null) clienteService.atualizarPontos(compra);
+    }
+
+    private double descontarPontosCompra(Compra compra) {
+        int totalEmPontos = compra.getTotalEmPontos();
+        int pontosGastos = compra.calcularPontosGastos();
+
+        if(pontosGastos > totalEmPontos)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Valor pago em pontos excede o valor da compra"
+            );
+
+        return (totalEmPontos - pontosGastos) / 10.;
     }
 }

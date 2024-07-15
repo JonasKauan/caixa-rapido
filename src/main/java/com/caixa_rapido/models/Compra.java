@@ -23,9 +23,13 @@ public class Compra {
     private Cliente cliente;
     private double total;
     private LocalDate data;
+    private boolean finalizada;
 
     @OneToMany(mappedBy = "compra")
     private List<ProdutoCompra> produtosCompra;
+
+    @OneToMany(mappedBy = "compra")
+    private List<Parcela> parcelas;
 
     public Compra() {
         this.data = LocalDate.now();
@@ -38,11 +42,26 @@ public class Compra {
         this.data = data;
     }
 
-    public void calcularTotal() {
-        for(ProdutoCompra produtoCompra : produtosCompra) {
-            total += produtoCompra.getTotal();
-        }
+    public double calcularParcelas() {
+        return parcelas.stream()
+                .filter(parcela -> parcela.getFormaPagamento() != null)
+                .mapToDouble(Parcela::getValor)
+                .sum();
     }
+
+    public int calcularPontosGastos() {
+        return (int) parcelas.stream()
+                .filter(parcela -> parcela.getFormaPagamento() == null)
+                .mapToDouble(Parcela::getValor)
+                .sum();
+    }
+
+    public void setTotal() {
+        this.total = produtosCompra.stream()
+            .mapToDouble(ProdutoCompra::getTotal)
+            .sum();
+    }
+
 
     public int getTotalEmPontos() {
         return (int) total * 10;

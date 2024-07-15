@@ -52,7 +52,7 @@ public class CompraController {
 
     @PutMapping("/finalizar-compra/{id}")
     public ResponseEntity<CompraResponse> finalizarCompra(@PathVariable UUID id) {
-        return ok(new CompraResponse(service.finalizarCompra(id)));
+        return ok(service.finalizarCompra(id));
     }
 
     @DeleteMapping("/{id}")

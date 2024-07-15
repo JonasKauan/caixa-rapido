@@ -24,7 +24,12 @@ public class ParcelaService {
         var parcela = new Parcela();
 
         parcela.setCompra(compraService.getPorId(dto.fkCompra()));
-        parcela.setFormaPagamento(formaPagamentoService.getPorId(dto.fkFormaPagamento()));
+
+        if(parcela.getCompra().isFinalizada())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Essa compra já foi finalizada");
+
+        if(dto.fkFormaPagamento() == null) validarPagamentoEmPontos(parcela, dto.valor());
+        else parcela.setFormaPagamento(formaPagamentoService.getPorId(dto.fkFormaPagamento()));
 
         BeanUtils.copyProperties(dto, parcela);
 
@@ -50,6 +55,10 @@ public class ParcelaService {
         var parcela = getPorId(id);
 
         parcela.setCompra(compraService.getPorId(dto.fkCompra()));
+
+        if(parcela.getCompra().isFinalizada())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Essa compra já foi finalizada");
+
         parcela.setFormaPagamento(formaPagamentoService.getPorId(dto.fkFormaPagamento()));
 
         BeanUtils.copyProperties(dto, parcela);
@@ -62,5 +71,19 @@ public class ParcelaService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Parcela com o id listado não existe");
 
         repository.deleteById(id);
+    }
+
+    private void validarPagamentoEmPontos(Parcela parcela, double valor) {
+        if (parcela.getCompra().getCliente() == null)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Cadastre-se para utilizar seus pontos nessa compra"
+            );
+
+        if(parcela.getCompra().getCliente().getPontos() < valor)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Quantidade insuficiente de pontos"
+            );
     }
 }

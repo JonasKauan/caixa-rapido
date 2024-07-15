@@ -6,7 +6,6 @@ import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraResponse;
 import com.caixa_rapido.models.ProdutoCompra;
 import com.caixa_rapido.repositories.ProdutoCompraRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,20 +23,13 @@ public class ProdutoCompraService {
     public ProdutoCompraResponse cadastrar(ProdutoCompraPostRequest dto) {
         var produtoCompra = new ProdutoCompra();
 
-        produtoCompra.setProduto(produtoService.getPorId(dto.fkProduto()));
         produtoCompra.setCompra(compraService.getPorId(dto.fkCompra()));
-        produtoCompra.setQuantidade(dto.quantidade());
 
-        var compra = produtoCompra.getCompra();
+        if(produtoCompra.getCompra().isFinalizada())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Essa compra já foi finalizada");
 
-        for(var p : compra.getProdutosCompra()) {
-            if(p.getProduto().equals(produtoCompra.getProduto())) {
-                produtoCompra = p;
-                produtoCompra.setQuantidade(dto.quantidade() + p.getQuantidade());
-                break;
-            }
-        }
-
+        produtoCompra.setProduto(produtoService.getPorId(dto.fkProduto()));
+        produtoCompra = agregarQuantidadeCompra(produtoCompra, dto.quantidade());
         produtoCompra.setTotal();
 
         return new ProdutoCompraResponse(repository.save(produtoCompra));
@@ -64,10 +56,16 @@ public class ProdutoCompraService {
     public ProdutoCompraResponse alterar(UUID id, ProdutoCompraPutRequest dto) {
         var produtoCompra = getPorId(id);
 
-        if(dto.fkProduto() != null) produtoCompra.setProduto(produtoService.getPorId(dto.fkProduto()));
-        if(dto.fkCompra() != null) produtoCompra.setCompra(compraService.getPorId(dto.fkCompra()));
+        if(dto.fkCompra() != null) {
+            produtoCompra.setCompra(compraService.getPorId(dto.fkCompra()));
 
-        produtoCompra.setQuantidade(dto.quantidade());
+            if(produtoCompra.getCompra().isFinalizada())
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Essa compra já foi finalizada");
+        }
+
+        if(dto.fkProduto() != null) produtoCompra.setProduto(produtoService.getPorId(dto.fkProduto()));
+
+        produtoCompra = agregarQuantidadeCompra(produtoCompra, dto.quantidade());
         produtoCompra.setTotal();
 
         return new ProdutoCompraResponse(repository.save(produtoCompra));
@@ -81,5 +79,22 @@ public class ProdutoCompraService {
             );
 
         repository.deleteById(id);
+    }
+
+    private ProdutoCompra agregarQuantidadeCompra(ProdutoCompra produtoCompra, int quantidade) {
+        produtoCompra.setQuantidade(quantidade);
+
+        var compra = produtoCompra.getCompra();
+
+        for(var p : compra.getProdutosCompra()) {
+            if(p.equals(produtoCompra)) continue;
+
+            if(p.getProduto().equals(produtoCompra.getProduto())) {
+                p.setQuantidade(quantidade + p.getQuantidade());
+                return p;
+            }
+        }
+
+        return produtoCompra;
     }
 }

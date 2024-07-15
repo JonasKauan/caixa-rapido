@@ -4,6 +4,7 @@ import com.caixa_rapido.dtos.cliente.ClientePutRequest;
 import com.caixa_rapido.dtos.cliente.ClientePostRequest;
 import com.caixa_rapido.dtos.cliente.ClienteResponse;
 import com.caixa_rapido.models.Cliente;
+import com.caixa_rapido.models.Compra;
 import com.caixa_rapido.repositories.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -63,5 +64,11 @@ public class ClienteService {
 
     public void deletarPorId(UUID id) {
         repository.deleteById(id);
+    }
+
+    public void atualizarPontos(Compra compra) {
+        var cliente = compra.getCliente();
+        cliente.atualizarPontos(compra);
+        repository.save(cliente);
     }
 }
