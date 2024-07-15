@@ -1,8 +1,6 @@
 package com.caixa_rapido.services;
 
-import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraPostRequest;
-import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraPutRequest;
-import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraResponse;
+import com.caixa_rapido.dtos.produtoCompra.*;
 import com.caixa_rapido.models.ProdutoCompra;
 import com.caixa_rapido.repositories.ProdutoCompraRepository;
 import lombok.RequiredArgsConstructor;
@@ -79,6 +77,15 @@ public class ProdutoCompraService {
             );
 
         repository.deleteById(id);
+    }
+
+    public CarrinhoCompra getCarrinho(UUID idCompra) {
+        var produtosCompra = repository.findAllCarrinhoResponse(compraService.getPorId(idCompra));
+
+        return new CarrinhoCompra(
+            produtosCompra,
+            produtosCompra.stream().mapToDouble(ProdutoCompraCarrinho::getTotal).sum()
+        );
     }
 
     private ProdutoCompra agregarQuantidadeCompra(ProdutoCompra produtoCompra, int quantidade) {

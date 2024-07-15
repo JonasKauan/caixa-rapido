@@ -1,6 +1,8 @@
 package com.caixa_rapido.repositories;
 
+import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraCarrinho;
 import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraResponse;
+import com.caixa_rapido.models.Compra;
 import com.caixa_rapido.models.ProdutoCompra;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,16 +18,22 @@ public interface ProdutoCompraRepository extends JpaRepository<ProdutoCompra, UU
             SELECT new ProdutoCompra(
                 p.idProdutoCompra,
                 p.compra,
-                new Produto(
-                    p.produto.idProduto,
-                    p.produto.nome,
-                    p.produto.valor,
-                    p.produto.categoria
-                ),
+                p.produto,
                 p.quantidade,
                 p.total
             )
             FROM ProdutoCompra p
             """)
     List<ProdutoCompraResponse> findAllResponse();
+
+    @Query("""
+            SELECT new ProdutoCompra(
+                p.idProdutoCompra,
+                p.produto,
+                p.quantidade,
+                p.total
+            )
+            FROM ProdutoCompra p WHERE p.compra = ?1
+            """)
+    List<ProdutoCompraCarrinho> findAllCarrinhoResponse(Compra compra);
 }

@@ -1,5 +1,6 @@
 package com.caixa_rapido.controllers;
 
+import com.caixa_rapido.dtos.produtoCompra.CarrinhoCompra;
 import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraPostRequest;
 import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraPutRequest;
 import com.caixa_rapido.dtos.produtoCompra.ProdutoCompraResponse;
@@ -40,6 +41,11 @@ public class ProdutoCompraController {
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoCompraResponse> getProdutoCompraPorId(@PathVariable UUID id) {
         return ok(service.getResponsePorId(id));
+    }
+
+    @GetMapping("/carrinho-compra/{idCompra}")
+    public ResponseEntity<CarrinhoCompra> getCarrinhoCompra(@PathVariable UUID idCompra) {
+        return ok(service.getCarrinho(idCompra));
     }
 
     @PutMapping("/{id}")

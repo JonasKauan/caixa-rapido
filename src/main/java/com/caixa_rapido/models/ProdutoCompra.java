@@ -44,6 +44,18 @@ public class ProdutoCompra {
         this.total = total;
     }
 
+    public ProdutoCompra(
+            UUID idProdutoCompra,
+            Produto produto,
+            Integer quantidade,
+            Double total
+    ) {
+        this.idProdutoCompra = idProdutoCompra;
+        this.produto = produto;
+        this.quantidade = quantidade;
+        this.total = total;
+    }
+
     public void setTotal() {
         this.total = this.produto.getValorComDesconto() * quantidade;
     }
