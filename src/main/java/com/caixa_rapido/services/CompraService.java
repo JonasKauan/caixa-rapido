@@ -77,8 +77,9 @@ public class CompraService {
 
     private void quitarCompra(Compra compra) {
         compra.setTotal();
+
         double valorAtualizado = descontarPontosCompra(compra);
-        double totalParcelas = compra.calcularParcelas();
+        double totalParcelas = compra.calcularTotalParcelas();
 
         if(valorAtualizado < totalParcelas)
             throw new ResponseStatusException(

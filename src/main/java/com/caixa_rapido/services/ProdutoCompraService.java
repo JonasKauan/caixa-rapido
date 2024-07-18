@@ -81,10 +81,13 @@ public class ProdutoCompraService {
 
     public CarrinhoCompra getCarrinho(UUID idCompra) {
         var produtosCompra = repository.findAllCarrinhoResponse(compraService.getPorId(idCompra));
+        double total = produtosCompra.stream().mapToDouble(ProdutoCompraCarrinho::getTotal).sum();
+        int totalEmPontos = (int) (total * 10);
 
         return new CarrinhoCompra(
             produtosCompra,
-            produtosCompra.stream().mapToDouble(ProdutoCompraCarrinho::getTotal).sum()
+            total,
+            totalEmPontos
         );
     }
 

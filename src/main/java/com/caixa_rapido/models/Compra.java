@@ -42,7 +42,7 @@ public class Compra {
         this.data = data;
     }
 
-    public double calcularParcelas() {
+    public double calcularTotalParcelas() {
         return parcelas.stream()
                 .filter(parcela -> parcela.getFormaPagamento() != null)
                 .mapToDouble(Parcela::getValor)
@@ -57,13 +57,26 @@ public class Compra {
     }
 
     public void setTotal() {
-        this.total = produtosCompra.stream()
+        total = produtosCompra.stream()
             .mapToDouble(ProdutoCompra::getTotal)
             .sum();
     }
 
+    public double getTotalComDesconto() {
+        if(parcelas == null) return total;
+
+        var parcelaComDesconto = parcelas.stream()
+                .filter(parcela -> parcela.getFormaPagamento().getDesconto() > 0)
+                .findFirst();
+
+        int desconto = parcelaComDesconto.isEmpty()
+                ? 0
+                : parcelaComDesconto.get().getFormaPagamento().getDesconto();
+
+        return total * (1 - desconto / 100.);
+    }
 
     public int getTotalEmPontos() {
-        return (int) total * 10;
+        return (int) getTotalComDesconto() * 10;
     }
 }

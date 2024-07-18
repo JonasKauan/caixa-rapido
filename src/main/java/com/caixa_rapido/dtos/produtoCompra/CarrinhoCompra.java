@@ -4,5 +4,6 @@ import java.util.List;
 
 public record CarrinhoCompra(
    List<ProdutoCompraCarrinho> produtosCompra,
-   double total
+   double total,
+   int totalEmPontos
 ) {}

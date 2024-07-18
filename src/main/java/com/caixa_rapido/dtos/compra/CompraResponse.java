@@ -13,15 +13,17 @@ import java.util.UUID;
 public class CompraResponse {
     private final UUID idCompra;
     private final String finalizada;
-    private final Double total;
-    private final LocalDate data;
+    private final double total;
+    private final double totalComDesconto;
     private final Integer totalEmPontos;
+    private final LocalDate data;
     private final ClienteResponse cliente;
 
     public CompraResponse(Compra compra) {
         this.idCompra = compra.getIdCompra();
         this.finalizada = compra.isFinalizada() ? "Sim" : "Não";
         this.total = compra.getTotal();
+        this.totalComDesconto = compra.getTotalComDesconto();
         this.data = compra.getData();
         this.totalEmPontos = compra.getTotalEmPontos();
         this.cliente = compra.getCliente() != null ? new ClienteResponse(compra.getCliente()) : null;
