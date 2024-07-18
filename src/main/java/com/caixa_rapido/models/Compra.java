@@ -77,6 +77,6 @@ public class Compra {
     }
 
     public int getTotalEmPontos() {
-        return (int) getTotalComDesconto() * 10;
+        return (int) (getTotalComDesconto() * 10);
     }
 }

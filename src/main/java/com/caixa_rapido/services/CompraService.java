@@ -81,6 +81,9 @@ public class CompraService {
         double valorAtualizado = descontarPontosCompra(compra);
         double totalParcelas = compra.calcularTotalParcelas();
 
+        System.out.println("Valor atualizado "+valorAtualizado);
+        System.out.println("Total Pardelas "+totalParcelas);
+
         if(valorAtualizado < totalParcelas)
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
