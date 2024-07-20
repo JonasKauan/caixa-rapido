@@ -1,7 +1,6 @@
 package com.caixa_rapido.services;
 
-import com.caixa_rapido.dtos.cliente.ClientePutRequest;
-import com.caixa_rapido.dtos.cliente.ClientePostRequest;
+import com.caixa_rapido.dtos.cliente.ClienteRequest;
 import com.caixa_rapido.dtos.cliente.ClienteResponse;
 import com.caixa_rapido.models.Cliente;
 import com.caixa_rapido.models.Compra;
@@ -21,7 +20,7 @@ public class ClienteService {
     private final ClienteRepository repository;
 
 
-    public ClienteResponse cadastrar(ClientePostRequest dto) {
+    public ClienteResponse cadastrar(ClienteRequest dto) {
         if(repository.existsByCpf(dto.cpf()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
 
@@ -49,14 +48,15 @@ public class ClienteService {
         return new ClienteResponse(getPorId(id));
     }
 
-    public ClienteResponse alterar(UUID id, ClientePutRequest dto) {
-        if(dto.cpf() != null && repository.existsByCpf(dto.cpf()))
+    public ClienteResponse alterar(UUID id, ClienteRequest dto) {
+        var cliente = getPorId(id);
+
+        if(!dto.cpf().equals(cliente.getCpf()) && repository.existsByCpf(dto.cpf()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "CPF já cadastrado");
 
-        if(dto.email() != null && repository.existsByEmail(dto.email()))
+        if(!dto.email().equals(cliente.getEmail()) && repository.existsByEmail(dto.email()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "E-mail já cadastrado");
 
-        var cliente = getPorId(id);
         BeanUtils.copyProperties(dto, cliente);
 
         return new ClienteResponse(repository.save(cliente));

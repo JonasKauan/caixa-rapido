@@ -1,7 +1,6 @@
 package com.caixa_rapido.controllers;
 
-import com.caixa_rapido.dtos.cliente.ClientePutRequest;
-import com.caixa_rapido.dtos.cliente.ClientePostRequest;
+import com.caixa_rapido.dtos.cliente.ClienteRequest;
 import com.caixa_rapido.dtos.cliente.ClienteResponse;
 import com.caixa_rapido.services.ClienteService;
 import jakarta.validation.Valid;
@@ -24,7 +23,7 @@ public class ClienteController {
 
 
     @PostMapping
-    public ResponseEntity<ClienteResponse> cadastrar(@Valid @RequestBody ClientePostRequest dto) {
+    public ResponseEntity<ClienteResponse> cadastrar(@Valid @RequestBody ClienteRequest dto) {
         return status(HttpStatus.CREATED).body(service.cadastrar(dto));
     }
 
@@ -45,7 +44,7 @@ public class ClienteController {
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponse> alterar(
         @PathVariable UUID id,
-        @Valid @RequestBody ClientePutRequest dto
+        @Valid @RequestBody ClienteRequest dto
     ) {
         return ok(service.alterar(id, dto));
     }
